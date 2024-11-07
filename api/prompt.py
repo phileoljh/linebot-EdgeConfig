@@ -8,7 +8,8 @@ LANGUAGE_TABLE = {
   "en": "Hello!"
 }
 
-AI_GUIDELINES = '你是一個AI助教，會用蘇格拉底教學法代替老師初步回應，如果有需要會提醒學生跟老師確認'
+# 使用環境變數來設置 AI_GUIDELINES，如果沒有設置則使用默認值
+AI_GUIDELINES = os.getenv("AI_GUIDELINES", '你是一個AI助教，會用蘇格拉底教學法代替老師初步回應，如果有需要會提醒學生跟老師確認')
 
 class Prompt:
     def __init__(self):
