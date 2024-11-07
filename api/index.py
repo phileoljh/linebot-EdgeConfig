@@ -65,9 +65,8 @@ def handle_message(event):
             "INIT_LANGUAGE": os.getenv("INIT_LANGUAGE"),
             "AI_GUIDELINES": os.getenv("AI_GUIDELINES")
         }
-        # 格式化環境變數為文本，並檢查目前系統中的實際值
-        actual_env_vars = {key: os.environ.get(key) for key in env_vars.keys()}
-        env_output = "\n".join([f"{key}: 設定值: {env_vars[key]}, 實際值: {actual_env_vars[key]}" for key in env_vars.keys()])
+        # 格式化環境變數為文本
+        env_output = "\n".join([f"{key}: {value}" for key, value in env_vars.items()])
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=f"目前的環境變數值:\n{env_output}")
@@ -77,7 +76,7 @@ def handle_message(event):
         
     if working_status:
         # chatgpt.add_msg(f"HUMAN:{event.message.text}?\n")
-        chatgpt.add_msg(f"HUMAN:{event.message.text} \n")
+        chatgpt.add_msg(f"{event.message.text} \n")
         reply_msg = chatgpt.get_response().replace("AI:", "", 1)
         chatgpt.add_msg(f"AI:{reply_msg}\n")
         line_bot_api.reply_message(
