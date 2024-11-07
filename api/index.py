@@ -52,7 +52,26 @@ def handle_message(event):
             event.reply_token,
             TextSendMessage(text="好的，我乖乖閉嘴 > <，如果想要我繼續說話，請跟我說 「說話」 > <"))
         return
-
+    
+    # 特殊命令：輸出環境變數 (Debug)
+    if event.message.text.lower() == "debug0123456789":
+        env_vars = {
+            "OPENAI_MODEL": os.getenv("OPENAI_MODEL"),
+            "OPENAI_TEMPERATURE": os.getenv("OPENAI_TEMPERATURE"),
+            "OPENAI_FREQUENCY_PENALTY": os.getenv("OPENAI_FREQUENCY_PENALTY"),
+            "OPENAI_PRESENCE_PENALTY": os.getenv("OPENAI_PRESENCE_PENALTY"),
+            "OPENAI_MAX_TOKENS": os.getenv("OPENAI_MAX_TOKENS"),
+            "MSG_LIST_LIMIT": os.getenv("MSG_LIST_LIMIT"),
+            "INIT_LANGUAGE": os.getenv("INIT_LANGUAGE")
+        }
+        # 格式化環境變數為文本
+        env_output = "\n".join([f"{key}: {value}" for key, value in env_vars.items()])
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=f"環境變數 Debug 資訊:\n{env_output}")
+        )
+        return
+        
     if working_status:
         # chatgpt.add_msg(f"HUMAN:{event.message.text}?\n")
         chatgpt.add_msg(f" {event.message.text} \n")
