@@ -53,8 +53,8 @@ def handle_message(event):
             TextSendMessage(text="好的，我乖乖閉嘴 > <，如果想要我繼續說話，請跟我說 「說話」 > <"))
         return
     
-    # 特殊命令：輸出環境變數 (Debug)
-    if event.message.text.lower() == "debug0123456789":
+    # 特殊命令：查目前的環境變數值 (Debug)
+    if event.message.text.lower() == "查目前的變數值":
         env_vars = {
             "OPENAI_MODEL": os.getenv("OPENAI_MODEL"),
             "OPENAI_TEMPERATURE": os.getenv("OPENAI_TEMPERATURE"),
@@ -65,13 +65,15 @@ def handle_message(event):
             "INIT_LANGUAGE": os.getenv("INIT_LANGUAGE"),
             "AI_GUIDELINES": os.getenv("AI_GUIDELINES")
         }
-        # 格式化環境變數為文本
-        env_output = "\n".join([f"{key}: {value}" for key, value in env_vars.items()])
+        # 格式化環境變數為文本，並檢查目前系統中的實際值
+        actual_env_vars = {key: os.environ.get(key) for key in env_vars.keys()}
+        env_output = "\n".join([f"{key}: 設定值: {env_vars[key]}, 實際值: {actual_env_vars[key]}" for key in env_vars.keys()])
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text=f"環境變數 Debug 資訊:\n{env_output}")
+            TextSendMessage(text=f"目前的環境變數值:\n{env_output}")
         )
         return
+        
         
     if working_status:
         # chatgpt.add_msg(f"HUMAN:{event.message.text}?\n")
