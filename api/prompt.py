@@ -21,8 +21,8 @@ class Prompt:
              })    
     def add_msg(self, new_msg):
         if len(self.msg_list) >= MSG_LIST_LIMIT:
-        # 確保不刪除第一個系統訊息，改為刪除第二個訊息
-        self.msg_list.pop(1)
+            # 確保不刪除第一個系統訊息，改為刪除第二個訊息
+            self.msg_list.pop(1)
         self.msg_list.append({"role": "user", "content": new_msg})
 
     def generate_prompt(self):
