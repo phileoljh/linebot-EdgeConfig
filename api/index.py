@@ -72,7 +72,29 @@ def handle_message(event):
             TextSendMessage(text=f"目前的環境變數值:\n{env_output}")
         )
         return
-        
+
+    # 特殊命令：顯示群組和用戶 ID
+    if event.message.text.lower() == "show id":
+        user_id = event.source.user_id
+        group_id = event.source.sender_id if event.source.type == "group" else "N/A"
+        group_name = "N/A"
+        if group_id != "N/A" and event.source.type == "group":
+            try:
+                group_summary = line_bot_api.get_group_summary(group_id)
+                group_name = group_summary.group_name
+            except Exception as e:
+                group_name = "Unknown"
+        user_profile = line_bot_api.get_profile(user_id)
+        user_name = user_profile.display_name if user_profile else "Unknown"
+        response = (f"user name: {user_name}\n"
+                    f"user id: {user_id}\n"
+                    f"group_name: {group_name}\n"
+                    f"group_id: {group_id}")
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=response)
+        )
+        return
         
     if working_status:
         # chatgpt.add_msg(f"HUMAN:{event.message.text}?\n")
