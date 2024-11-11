@@ -9,6 +9,8 @@ import os
 line_bot_api = LineBotApi(os.getenv("LINE_CHANNEL_ACCESS_TOKEN"))
 line_handler = WebhookHandler(os.getenv("LINE_CHANNEL_SECRET"))
 working_status = os.getenv("DEFALUT_TALKING", default = "true").lower() == "true"
+admin_members = os.getenv("ADMIN_MEMBERS", default="").split(",") if os.getenv("ADMIN_MEMBERS") else []
+
 
 app = Flask(__name__)
 chatgpt = ChatGPT()
@@ -38,6 +40,9 @@ def handle_message(event):
     global working_status
     if event.message.type != "text":
         return
+    
+    user_id = event.source.user_id
+    is_admin = user_id in admin_members
 
     if event.message.text == "說話":
         working_status = True
@@ -54,7 +59,7 @@ def handle_message(event):
         return
     
     # 特殊命令：查目前的環境變數值 (Debug)
-    if event.message.text.lower() == "查目前的變數值":
+    if event.message.text.lower() == "查目前的變數值" and is_admin:
         env_vars = {
             "OPENAI_MODEL": os.getenv("OPENAI_MODEL"),
             "OPENAI_TEMPERATURE": os.getenv("OPENAI_TEMPERATURE"),
@@ -63,7 +68,8 @@ def handle_message(event):
             "OPENAI_MAX_TOKENS": os.getenv("OPENAI_MAX_TOKENS"),
             "MSG_LIST_LIMIT": os.getenv("MSG_LIST_LIMIT"),
             "INIT_LANGUAGE": os.getenv("INIT_LANGUAGE"),
-            "AI_GUIDELINES": os.getenv("AI_GUIDELINES")
+            "AI_GUIDELINES": os.getenv("AI_GUIDELINES"),
+            "ADMIN_MEMBERS": os.getenv("ADMIN_MEMBERS")
         }
         # 格式化環境變數為文本
         env_output = "\n".join([f"{key}: {value}" for key, value in env_vars.items()])
@@ -75,7 +81,6 @@ def handle_message(event):
 
     # 特殊命令：顯示群組和用戶 ID
     if event.message.text.lower() == "show id":
-        user_id = event.source.user_id
         group_id = event.source.sender_id if event.source.type == "group" else "N/A"
         group_name = "N/A"
         if group_id != "N/A" and event.source.type == "group":
