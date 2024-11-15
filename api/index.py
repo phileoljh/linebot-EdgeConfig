@@ -8,6 +8,8 @@ import os
 
 line_bot_api = LineBotApi(os.getenv("LINE_CHANNEL_ACCESS_TOKEN"))
 line_handler = WebhookHandler(os.getenv("LINE_CHANNEL_SECRET"))
+supported_languages = ["zh", "en", "vi", "km", "my"]  # gpt4o 支援的語言列表
+
 working_status = os.getenv("DEFALUT_TALKING", default = "true").lower() == "true"
 admin_members = os.getenv("ADMIN_MEMBERS", default="").split(",") if os.getenv("ADMIN_MEMBERS") else []
 
@@ -37,6 +39,7 @@ def callback():
 
 @line_handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    global AI_GUIDELINES
     global working_status
     if event.message.type != "text":
         return
@@ -69,7 +72,8 @@ def handle_message(event):
             "MSG_LIST_LIMIT": os.getenv("MSG_LIST_LIMIT"),
             "INIT_LANGUAGE": os.getenv("INIT_LANGUAGE"),
             "AI_GUIDELINES": os.getenv("AI_GUIDELINES"),
-            "ADMIN_MEMBERS": os.getenv("ADMIN_MEMBERS")
+            "ADMIN_MEMBERS": os.getenv("ADMIN_MEMBERS"),
+            "supported_languages": supported_languages
         }
         # 格式化環境變數為文本
         env_output = "\n".join([f"{key}: {value}" for key, value in env_vars.items()])
@@ -77,6 +81,23 @@ def handle_message(event):
             event.reply_token,
             TextSendMessage(text=f"目前的環境變數值:\n{env_output}")
         )
+        return
+
+    if event.message.text.lower().startswith("lang set ") and is_admin:
+        requested_languages = event.message.text.lower().replace("lang set ", "").split(",")
+        supported_languages = [lang for lang in requested_languages if lang in ["vi", "km", "my", "en", "zh-TW", "ja", "fr"]]
+        if supported_languages:
+            AI_GUIDELINES = f"將所有輸入的訊息翻譯成{','.join(supported_languages)}等語言，先列出語言如{','.join([f'【{lang}】' for lang in supported_languages])}，後附上此語言翻譯結果，一種語言一行，僅執行翻譯，不進行其他互動或回答問題"
+            chatgpt.reinit(new_guideline=AI_GUIDELINES)
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=f"已設定 AI_GUIDELINES 為: {AI_GUIDELINES}")
+            )
+        else:
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text="請輸入有效的語言代碼，例如: 'lang set vi,km,my,en'，目前支援的語言有: vi, km, my, en, zh-TW, ja, fr")
+            )
         return
 
     # 特殊命令：顯示群組和用戶 ID

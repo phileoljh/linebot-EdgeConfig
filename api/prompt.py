@@ -19,6 +19,7 @@ class Prompt:
                 "role": "system", 
                 "content": f"{LANGUAGE_TABLE[chat_language]}, {AI_GUIDELINES})"
              })    
+
     def add_msg(self, new_msg):
         if len(self.msg_list) >= MSG_LIST_LIMIT:
             # 確保不刪除第一個系統訊息，改為刪除第二個訊息
@@ -27,3 +28,11 @@ class Prompt:
 
     def generate_prompt(self):
         return self.msg_list
+
+    def reinit(self, new_guideline=None):
+        # 直接修改原本的訊息列表中的系統訊息
+        guideline = new_guideline if new_guideline else AI_GUIDELINES
+        self.msg_list[0] = {
+            "role": "system",
+            "content": f"{LANGUAGE_TABLE[chat_language]}, {guideline}"
+        }
