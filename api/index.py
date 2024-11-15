@@ -90,7 +90,7 @@ def handle_message(event):
         filtered_languages = [lang for lang in requested_languages if lang in supported_languages]
         invalid_languages = [lang for lang in requested_languages if lang not in supported_languages]
         if filtered_languages:
-            USER_TRANSLATION_SETTINGS = f"將所有輸入的訊息翻譯成{','.join(filtered_languages)}等語言，先列出語言如{','.join([f'【{lang}】' for lang in filtered_languages])}，後附上此語言翻譯結果，一種語言一行，僅執行翻譯，不進行其他互動或回答問題"
+            USER_TRANSLATION_SETTINGS = f"將所有輸入的訊息翻譯成{','.join(filtered_languages)}等幾種語言，先列出語言別如【en】【zh-TW】，後附上此語言翻譯結果，一種語言一行，僅執行翻譯，不進行其他互動或回答問題"
             chatgpt.reinit(USER_TRANSLATION_SETTINGS)
             line_bot_api.reply_message(
                 event.reply_token,
