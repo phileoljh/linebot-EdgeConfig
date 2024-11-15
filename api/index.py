@@ -41,6 +41,8 @@ def callback():
 def handle_message(event):
     global AI_GUIDELINES
     global working_status
+    global supported_languages
+    
     if event.message.type != "text":
         return
     
@@ -85,9 +87,9 @@ def handle_message(event):
 
     if event.message.text.lower().startswith("lang set ") and is_admin:
         requested_languages = event.message.text.lower().replace("lang set ", "").split(",")
-        supported_languages = [lang for lang in requested_languages if lang in ["vi", "km", "my", "en", "zh-TW", "ja", "fr"]]
-        if supported_languages:
-            AI_GUIDELINES = f"將所有輸入的訊息翻譯成{','.join(supported_languages)}等語言，先列出語言如{','.join([f'【{lang}】' for lang in supported_languages])}，後附上此語言翻譯結果，一種語言一行，僅執行翻譯，不進行其他互動或回答問題"
+        filtered_languages = [lang for lang in requested_languages if lang in supported_languages]
+        if filtered_languages:
+            AI_GUIDELINES = f"將所有輸入的訊息翻譯成{','.join(filtered_languages)}等語言，先列出語言如{','.join([f'【{lang}】' for lang in filtered_languages])}，後附上此語言翻譯結果，一種語言一行，僅執行翻譯，不進行其他互動或回答問題"
             chatgpt.reinit(new_guideline=AI_GUIDELINES)
             line_bot_api.reply_message(
                 event.reply_token,
