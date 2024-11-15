@@ -73,7 +73,7 @@ def handle_message(event):
             "INIT_LANGUAGE": os.getenv("INIT_LANGUAGE"),
             "AI_GUIDELINES": os.getenv("AI_GUIDELINES"),
             "ADMIN_MEMBERS": os.getenv("ADMIN_MEMBERS"),
-            "supported_languages": supported_languages
+            "supported_languages": ", ".join(supported_languages)
         }
         # 格式化環境變數為文本
         env_output = "\n".join([f"{key}: {value}" for key, value in env_vars.items()])
