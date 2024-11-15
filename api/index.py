@@ -115,7 +115,8 @@ def handle_message(event):
         response = (f"user name: {user_name}\n"
                     f"user id: {user_id}\n"
                     f"group_name: {group_name}\n"
-                    f"group_id: {group_id}")
+                    f"group_id: {group_id}\n"
+                    f"is_admin: {is_admin}")
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=response)
