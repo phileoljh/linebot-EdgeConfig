@@ -29,7 +29,7 @@ class Prompt:
     def generate_prompt(self):
         return self.msg_list
 
-    def reinit(self, new_guideline=None):
+    def reinit_(self, new_guideline=None):
         # 直接修改原本的訊息列表中的系統訊息
         guideline = new_guideline if new_guideline else AI_GUIDELINES
         self.msg_list[0] = {

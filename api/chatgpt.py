@@ -24,4 +24,4 @@ class ChatGPT:
         self.prompt.add_msg(text)
 
     def reinit(self, text):
-        self.prompt.reinit(text)
+        self.prompt.reinit_(text)
