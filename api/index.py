@@ -8,7 +8,7 @@ import os
 
 line_bot_api = LineBotApi(os.getenv("LINE_CHANNEL_ACCESS_TOKEN"))
 line_handler = WebhookHandler(os.getenv("LINE_CHANNEL_SECRET"))
-supported_languages = ["zh-TW", "ja", "fr", "en", "vi", "km", "my"]  # gpt4o 支援的語言列表
+supported_languages = ["zh-TW", "ja", "fr", "en", "vi", "km", "my", "id", "th", "ko", "zh-CN"]  # gpt4o 支援的語言列表
 
 working_status = os.getenv("DEFALUT_TALKING", default = "true").lower() == "true"
 admin_members = os.getenv("ADMIN_MEMBERS", default="").split(",") if os.getenv("ADMIN_MEMBERS") else []
@@ -87,8 +87,8 @@ def handle_message(event):
 
     if event.message.text.lower().startswith("lang set ") and is_admin:
         requested_languages = [lang.strip() for lang in event.message.text.lower().replace("lang set ", "").split(",")]
-        filtered_languages = [lang for lang in requested_languages if lang in supported_languages]
-        invalid_languages = [lang for lang in requested_languages if lang not in supported_languages]
+        filtered_languages = [lang for lang in requested_languages if lang in [lang.lower() for lang in supported_languages]]
+        invalid_languages = [lang for lang in requested_languages if lang not in [lang.lower() for lang in supported_languages]]
         if filtered_languages:
             USER_TRANSLATION_SETTINGS = f"將所有輸入的訊息翻譯成{','.join(filtered_languages)}等幾種語言，先列出語言別如{','.join([f'【{lang}】' for lang in filtered_languages])}，後附上此語言翻譯，按順序一種語言一行，僅執行翻譯，不進行其他互動或回答問題"
             chatgpt.reinit(USER_TRANSLATION_SETTINGS)
