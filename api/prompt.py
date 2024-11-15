@@ -36,3 +36,5 @@ class Prompt:
             "role": "system",
             "content": f"{LANGUAGE_TABLE[chat_language]}, {guideline}"
         }
+        # 清空所有非系統訊息
+        self.msg_list = [self.msg_list[0]]
