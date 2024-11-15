@@ -91,7 +91,7 @@ def handle_message(event):
         invalid_languages = [lang for lang in requested_languages if lang not in supported_languages]
         if filtered_languages:
             USER_TRANSLATION_SETTINGS = f"將所有輸入的訊息翻譯成{','.join(filtered_languages)}等語言，先列出語言如{','.join([f'【{lang}】' for lang in filtered_languages])}，後附上此語言翻譯結果，一種語言一行，僅執行翻譯，不進行其他互動或回答問題"
-            chatgpt.reinit(new_guideline=USER_TRANSLATION_SETTINGS)
+            chatgpt.reinit(USER_TRANSLATION_SETTINGS)
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=f"已設定 AI_GUIDELINES 為: {USER_TRANSLATION_SETTINGS}")
