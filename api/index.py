@@ -45,7 +45,7 @@ def handle_message(event):
         return
     
     user_id = event.source.user_id
-    is_admin = user_id in admin_members
+    is_admin = user_id.strip() in [member.strip() for member in admin_members]
 
     if event.message.text == "說話":
         working_status = True
