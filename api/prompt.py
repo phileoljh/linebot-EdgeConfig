@@ -38,7 +38,7 @@ class Prompt:
             Prompt.default_guideline = new_guideline
         # 重新初始化系統訊息
         self.msg_list[0] = {
-            "role": "system",Prompt.default_guideline
+            "role": "system",
             "content": f"{LANGUAGE_TABLE[chat_language]}, {Prompt.default_guideline}"
         }
         # 清空所有非系統訊息
