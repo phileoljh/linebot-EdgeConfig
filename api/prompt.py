@@ -12,6 +12,9 @@ LANGUAGE_TABLE = {
 AI_GUIDELINES = os.getenv("AI_GUIDELINES", '你是一個AI助教，會用蘇格拉底教學法代替老師初步回應，如果有需要會提醒學生跟老師確認')
 
 class Prompt:
+
+    default_guideline = AI_GUIDELINES  # 動態管理規則
+
     def __init__(self):
         self.msg_list = []
         self.msg_list.append(
@@ -30,11 +33,13 @@ class Prompt:
         return self.msg_list
 
     def reinit_(self, new_guideline=None):
-        # 直接修改原本的訊息列表中的系統訊息
-        guideline = new_guideline if new_guideline else AI_GUIDELINES
+        # 更新 default_guideline
+        if new_guideline:
+            Prompt.default_guideline = new_guideline
+        # 重新初始化系統訊息
         self.msg_list[0] = {
-            "role": "system",
-            "content": f"{LANGUAGE_TABLE[chat_language]}, {guideline}"
+            "role": "system",Prompt.default_guideline
+            "content": f"{LANGUAGE_TABLE[chat_language]}, {Prompt.default_guideline}"
         }
         # 清空所有非系統訊息
         self.msg_list = [self.msg_list[0]]
