@@ -14,7 +14,6 @@ supported_languages = ["zh-TW", "ja", "fr", "en", "vi", "km", "my", "id", "th", 
 working_status = os.getenv("DEFALUT_TALKING", default = "true").lower() == "true"
 admin_members = os.getenv("ADMIN_MEMBERS", default="").split(",") if os.getenv("ADMIN_MEMBERS") else []
 EDGE_CONFIG_URL = os.getenv('EDGE_CONFIG')
-EDGE_CONFIG_TOKEN = os.getenv('EDGE_CONFIG_TOKEN')
 
 app = Flask(__name__)
 chatgpt = ChatGPT()
@@ -22,7 +21,7 @@ chatgpt = ChatGPT()
 def get_edge_config(key):
     try:
         # 發送請求以獲取所有項目
-        response = requests.get(f"{EDGE_CONFIG_URL}/items?token={EDGE_CONFIG_TOKEN}")
+        response = requests.get(f"{EDGE_CONFIG_URL}")
         response.raise_for_status()  # 確保請求成功
 
         # 獲取 JSON 數據
