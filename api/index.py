@@ -85,7 +85,7 @@ def handle_message(event):
 
     # 特殊命令：查目前的環境變數值 (Debug)
     if event.message.text.lower() == "show edge_config" and is_admin:
-        prompt_config_key = "greeting2"
+        prompt_config_key = "line_prompt"
 
         try:
             chat_prompt = get_edge_config(prompt_config_key)
