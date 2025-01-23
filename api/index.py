@@ -14,15 +14,29 @@ supported_languages = ["zh-TW", "ja", "fr", "en", "vi", "km", "my", "id", "th", 
 working_status = os.getenv("DEFALUT_TALKING", default = "true").lower() == "true"
 admin_members = os.getenv("ADMIN_MEMBERS", default="").split(",") if os.getenv("ADMIN_MEMBERS") else []
 EDGE_CONFIG_URL = os.getenv('EDGE_CONFIG')
+EDGE_CONFIG_TOKEN = os.getenv('EDGE_CONFIG_TOKEN')
 
 app = Flask(__name__)
 chatgpt = ChatGPT()
 
 def get_edge_config(key):
-    response = requests.get(f"{EDGE_CONFIG_URL}/items/{key}")
-    if response.status_code == 200:
-        return response.json()
-    raise Exception("Failed to fetch Edge Config")
+    try:
+        # 發送請求以獲取所有項目
+        response = requests.get(f"{EDGE_CONFIG_URL}/items?token={EDGE_CONFIG_TOKEN}")
+        response.raise_for_status()  # 確保請求成功
+
+        # 獲取 JSON 數據
+        data = response.json()
+
+        # 提取指定 key 的值
+        if key in data:
+            return data[key]
+        else:
+            raise KeyError(f"Key '{key}' 不存在於 Edge Config 中")
+    except requests.exceptions.RequestException as e:
+        raise Exception(f"Failed to fetch Edge Config: {e}")
+    except KeyError as e:
+        raise Exception(str(e))
 
 # domain root
 @app.route('/')
