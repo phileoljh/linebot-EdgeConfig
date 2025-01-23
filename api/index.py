@@ -96,7 +96,7 @@ def handle_message(event):
             chat_prompt = f"取得 Edge Config 失敗: {edge_config['error']}"
 
         # 組裝回覆訊息
-        reply_message = f"目前的 Edge Config line_prompt:\n{line_prompt}"
+        reply_message = f"目前的 Edge Config {prompt_config_key}:\n{chat_prompt}"
 
         # 回覆給使用者
         line_bot_api.reply_message(
