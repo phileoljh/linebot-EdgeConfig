@@ -5,6 +5,7 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from api.chatgpt import ChatGPT
 
 import os
+import requests
 
 line_bot_api = LineBotApi(os.getenv("LINE_CHANNEL_ACCESS_TOKEN"))
 line_handler = WebhookHandler(os.getenv("LINE_CHANNEL_SECRET"))
@@ -12,10 +13,16 @@ supported_languages = ["zh-TW", "ja", "fr", "en", "vi", "km", "my", "id", "th", 
 
 working_status = os.getenv("DEFALUT_TALKING", default = "true").lower() == "true"
 admin_members = os.getenv("ADMIN_MEMBERS", default="").split(",") if os.getenv("ADMIN_MEMBERS") else []
-
+EDGE_CONFIG_URL = os.getenv('EDGE_CONFIG')
 
 app = Flask(__name__)
 chatgpt = ChatGPT()
+
+def get_edge_config(key):
+    response = requests.get(f"{EDGE_CONFIG_URL}/items/{key}")
+    if response.status_code == 200:
+        return response.json()
+    raise Exception("Failed to fetch Edge Config")
 
 # domain root
 @app.route('/')
@@ -62,7 +69,29 @@ def handle_message(event):
             event.reply_token,
             TextSendMessage(text="好的，我乖乖閉嘴 > <，如果想要我繼續說話，請跟我說 「說話」 > <"))
         return
-    
+
+    # 特殊命令：查目前的環境變數值 (Debug)
+    if event.message.text.lower() == "show edge_config" and is_admin:
+        prompt_config_key = "greeting2"
+
+        try:
+            chat_prompt = get_edge_config(prompt_config_key)
+            print(f"Chat prompt loaded: {chat_prompt}")
+        except Exception as e:
+            print(f"Error loading prompt from Edge Config: {e}")
+            chat_prompt = f"取得 Edge Config 失敗: {edge_config['error']}"
+
+        # 組裝回覆訊息
+        reply_message = f"目前的 Edge Config line_prompt:\n{line_prompt}"
+
+        # 回覆給使用者
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=reply_message)
+        )
+
+        return
+
     # 特殊命令：查目前的環境變數值 (Debug)
     if event.message.text.lower() == "查目前的變數值" and is_admin:
         env_vars = {
