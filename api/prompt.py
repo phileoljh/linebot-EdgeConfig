@@ -25,8 +25,15 @@ class Prompt:
         # 初始化 msg_list
         self.msg_list = []
 
+        # 嘗試從 Edge Config 獲取 line_prompt 並靈活替換語言列表
+        self.lang_default = self.fetch_edge_config_item("lang_default")
+
         # 嘗試從 Edge Config 獲取 line_prompt
         self.default_guideline = self.fetch_edge_config_item("line_prompt")
+
+        # 如果 lang_default 存在，執行語言列表替換
+        if self.lang_default:
+            self.default_guideline = self.replace_language_list(self.default_guideline)
 
         # 初始化系統訊息
         self.msg_list.append(
@@ -60,8 +67,7 @@ class Prompt:
         # 清空所有非系統訊息
         self.msg_list = [self.msg_list[0]]
 
-    @staticmethod
-    def fetch_edge_config_item(key):
+    def fetch_edge_config_item(self, key):
         """
         從 Edge Config 獲取指定的配置項目。如果失敗或不存在，返回 AI_GUIDELINES。
         """
@@ -90,3 +96,17 @@ class Prompt:
 
         # 返回預設值作為保險
         return AI_GUIDELINES
+
+    def replace_language_list(self, prompt):
+        """
+        使用正則表達式將任何語言列表替換為從 Edge Config 中獲取的 lang_default。
+        """
+        # 從 Edge Config 獲取 lang_default
+        if not self.lang_default:
+            raise ValueError("無法從 Edge Config 獲取 lang_default 設定")
+
+        # 定義語言列表的正則模式
+        lang_pattern = r"[a-z]{2,3}(-[a-z]{2,3})?(, *[a-z]{2,3}(-[a-z]{2,3})?)*"
+
+        # 替換語言列表為 lang_default
+        return re.sub(lang_pattern, self.lang_default, prompt)
