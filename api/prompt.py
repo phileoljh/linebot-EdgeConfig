@@ -1,4 +1,5 @@
 import os
+import re
 import requests
 
 chat_language = os.getenv("INIT_LANGUAGE", default = "zh")
