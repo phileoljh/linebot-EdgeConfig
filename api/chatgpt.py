@@ -13,7 +13,8 @@ class ChatGPT:
         self.temperature = float(os.getenv("OPENAI_TEMPERATURE", default = 0))
         self.max_tokens = int(os.getenv("OPENAI_MAX_TOKENS", default = 500))
         #OPENAI
-        self.base_url = os.getenv("OPENAI_BASE_URL", default="https://api.openai.com/v1")     
+        self.base_url = os.getenv("OPENAI_BASE_URL", default="https://api.openai.com/v1")
+        #Groq (OPENAI_BASE_URL", default="https://api.groq.com/openai/v1") => 翻譯的不太好
 
     def get_response(self):
         response = client.chat.completions.create(
