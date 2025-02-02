@@ -9,7 +9,7 @@ import requests
 
 line_bot_api = LineBotApi(os.getenv("LINE_CHANNEL_ACCESS_TOKEN"))
 line_handler = WebhookHandler(os.getenv("LINE_CHANNEL_SECRET"))
-supported_languages = ["zh-TW", "ja", "fr", "en", "vi", "km", "my", "id", "th", "ko", "zh-CN"]  # gpt4o 支援的語言列表
+supported_languages = ["zh-TW", "ja", "fr", "en", "vi", "km", "my", "id", "th", "ko", "tl", "zh-CN"]  # gpt4o 支援的語言列表
 
 working_status = os.getenv("DEFALUT_TALKING", default = "true").lower() == "true"
 admin_members = os.getenv("ADMIN_MEMBERS", default="").split(",") if os.getenv("ADMIN_MEMBERS") else []
