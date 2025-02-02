@@ -12,6 +12,10 @@ class ChatGPT:
         self.model = os.getenv("OPENAI_MODEL", default = "gpt-4o-mini")
         self.temperature = float(os.getenv("OPENAI_TEMPERATURE", default = 0))
         self.max_tokens = int(os.getenv("OPENAI_MAX_TOKENS", default = 500))
+        #OPENAI
+        self.base_url = os.getenv("OPENAI_BASE_URL", default="https://api.openai.com/v1")
+        #Groq
+        #self.base_url = os.getenv("OPENAI_BASE_URL", default="https://api.groq.com/openai/v1/chat/completions")        
 
     def get_response(self):
         response = client.chat.completions.create(
